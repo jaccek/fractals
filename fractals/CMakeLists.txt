@@ -11,7 +11,6 @@ include_directories(
 
 # library directories
 link_directories(
-	../artefacts
 	../lib/SFML
 )
 
