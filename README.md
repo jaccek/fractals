@@ -11,6 +11,7 @@ This project was created to play with fractals.
 # Compiling (Linux)
 
 Preferred way to compile:
+
 1. Go to main directory (it contains README.md).
 2. Create two folders: `build` and `artifacts`.
 3. Open terminal and go to `build` folder.

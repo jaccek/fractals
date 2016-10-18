@@ -41,14 +41,12 @@ void MandelbrotRenderer::render(sf::RenderWindow *window)
 
 float MandelbrotRenderer::toRealis(int pixel, float left, float right)
 {
-    //return (float)(pixel - mWidth / 2) * mScale;
     float t = (float) pixel / (float) mWidth;
     return left * (1.0f - t) + right * t;
 }
 
 float MandelbrotRenderer::toImaginalis(int pixel, float top, float bottom)
 {
-    //return -(float)(pixel - mHeight / 2) * mScale;
     float t = (float) pixel / (float) mHeight;
     return top * (1.0f - t) + bottom * t;
 }
