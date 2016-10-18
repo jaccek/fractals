@@ -24,4 +24,10 @@ private:
 	bool mIsFocused;
 	int mFpsCounter;
 	float mFpsTimer;
+	bool mIsLeftMouseButtonPressed;
+	float mViewScale;
+	int mLastMousePositionX;
+	int mLastMousePositionY;
+	float mCenterPointX;
+	float mCenterPointY;
 };

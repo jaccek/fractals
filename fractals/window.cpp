@@ -9,10 +9,14 @@ Window::Window()
 	mIsFocused = true;
 	mFpsCounter = 0;
 	mFpsTimer = 0.0f;
+	mIsLeftMouseButtonPressed = false;
+	mViewScale = 0.005f;
+	mCenterPointX = 0.0f;
+	mCenterPointY = 0.0f;
 
 	mRenderer = new MandelbrotRenderer(width, height);
 
-	InputArgs args = InputArgs::fromPointAndScale(0.0f, 0.0f, 0.005f, width, height);
+	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, width, height);
 	mRenderer->generate(args);
 }
 
@@ -80,6 +84,7 @@ void Window::dispatchEvents()
 	sf::Event event;
 	while (mWindow.pollEvent(event))
 	{
+		InputArgs args;
 		switch (event.type)
 		{
 			case sf::Event::Closed:
@@ -92,6 +97,49 @@ void Window::dispatchEvents()
 
 			case sf::Event::LostFocus:
 				mIsFocused = false;
+				break;
+
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					mWindow.close();
+				}
+				break;
+
+			case sf::Event::MouseButtonPressed:
+				mIsLeftMouseButtonPressed = true;
+				mLastMousePositionX = event.mouseButton.x;
+				mLastMousePositionY = event.mouseButton.y;
+				break;
+
+			case sf::Event::MouseWheelMoved:
+				// TODO: zoom to mouse position (not to window center)
+				if (event.mouseWheel.delta > 0)
+				{
+					mViewScale /= 2.0f;
+				}
+				else
+				{
+					mViewScale *= 2.0f;
+				}
+				args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, width, height);
+				mRenderer->generate(args);
+				break;
+
+			case sf::Event::MouseButtonReleased:
+				mIsLeftMouseButtonPressed = event.type == false;
+				args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, width, height);
+				mRenderer->generate(args);
+				break;
+
+			case sf::Event::MouseMoved:
+				if (mIsLeftMouseButtonPressed && mIsFocused)
+				{
+					mCenterPointX -= (float) (event.mouseMove.x - mLastMousePositionX) * mViewScale;
+					mCenterPointY += (float) (event.mouseMove.y - mLastMousePositionY) * mViewScale;
+					mLastMousePositionX = event.mouseMove.x;
+					mLastMousePositionY = event.mouseMove.y;
+				}
 				break;
 
 			default:
