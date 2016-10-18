@@ -16,8 +16,10 @@ Preferred way to compile:
 2. Create two folders: `build` and `artifacts`.
 3. Open terminal and go to `build` folder.
 4. Run this commands in terminal:
+
   ```bash
   cmake ..
   make
   ```
+  
 5. Compiled application should be in `artifacts` folder.
