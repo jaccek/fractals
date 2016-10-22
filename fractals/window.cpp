@@ -2,11 +2,17 @@
 #include "generators/mandelbrot_generator.h"
 #include "graphics/impl/qt_image_impl.h"
 
+#include <QMouseEvent>
+
 const unsigned WIDTH = 800;
 const unsigned HEIGHT = 600;
 
 Window::Window()
 {
+	mCenterPointX = 0.0f;
+	mCenterPointY = 0.0f;
+	mViewScale = 0.005f;
+
 	mGenerator = new MandelbrotGenerator();
 }
 
@@ -26,12 +32,11 @@ bool Window::init()
 	mImage = new QtImageImpl();
 	mImage->create(WIDTH, HEIGHT);
 
-	InputArgs args = InputArgs::fromPointAndScale(0.0f, 0.0f, 0.005f, mImage->getWidth(), mImage->getHeight());
-	//Image &image = *mImage;
+	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mImage->getWidth(), mImage->getHeight());
 	mGenerator->generate(*mImage, args);
 
-    QLabel *label = new QLabel(centralWidget);
-    label->setPixmap(QPixmap::fromImage(*mImage->getImage()));
+    mLabel = new QLabel(centralWidget);
+    mLabel->setPixmap(QPixmap::fromImage(*mImage->getImage()));
 
     QMenuBar *menuBar = new QMenuBar(centralWidget);
     QMenu *menu = new QMenu("menu");
@@ -39,6 +44,43 @@ bool Window::init()
     menuBar->addMenu(menu);
 
     setCentralWidget(centralWidget);
+	setMouseTracking(true);
 
 	return true;
+}
+
+void Window::mouseMoveEvent(QMouseEvent *event)
+{
+}
+
+void Window::mousePressEvent(QMouseEvent *event)
+{
+	mMousePositionX = event->x();
+	mMousePositionY = event->y();
+}
+
+void Window::mouseReleaseEvent(QMouseEvent *event)
+{
+	mCenterPointX -= (float) (event->x() - mMousePositionX) * mViewScale;
+	mCenterPointY += (float) (event->y() - mMousePositionY) * mViewScale;
+	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mImage->getWidth(), mImage->getHeight());
+	mGenerator->generate(*mImage, args);
+	mLabel->setPixmap(QPixmap::fromImage(*mImage->getImage()));
+}
+
+void Window::wheelEvent(QWheelEvent *event)
+{
+	QPoint numDegrees = event->angleDelta() / 8;
+	if (numDegrees.y() < 0)
+	{
+		mViewScale *= 1.1f;
+	}
+	else
+	{
+		mViewScale /= 1.1f;
+	}
+
+	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mImage->getWidth(), mImage->getHeight());
+	mGenerator->generate(*mImage, args);
+	mLabel->setPixmap(QPixmap::fromImage(*mImage->getImage()));
 }
