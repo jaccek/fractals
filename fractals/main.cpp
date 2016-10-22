@@ -1,16 +1,17 @@
 #include "window.h"
+#include <QApplication>
 
-int main()
+int main(int argc, char **argv)
 {
+	QApplication app(argc, argv);
 	Window window;
+
 	if (!window.init())
 	{
 		printf("Cannot initialize window\n");
 		return 1;
 	}
 
-	window.mainLoop();
-
-	window.end();
-	return 0;
+	window.show();
+	return app.exec();
 }

@@ -1,33 +1,21 @@
 #pragma once
 
-#include "renderers/renderer.h"
-#include <SFML/Graphics.hpp>
+#include "generators/generator.h"
+#include "graphics/impl/qt_image_impl.h"
 
-class Window
+#include <QMainWindow>
+#include <QMenuBar>
+#include <QLabel>
+
+class Window : public QMainWindow
 {
 public:
 	Window();
 	~Window();
 
 	bool init();
-	void end();
-
-	void mainLoop();
 
 private:
-	void dispatchEvents();
-	void render();
-
-	sf::RenderWindow mWindow;
-	Renderer *mRenderer;
-
-	bool mIsFocused;
-	int mFpsCounter;
-	float mFpsTimer;
-	bool mIsLeftMouseButtonPressed;
-	float mViewScale;
-	int mLastMousePositionX;
-	int mLastMousePositionY;
-	float mCenterPointX;
-	float mCenterPointY;
+	Generator *mGenerator;
+	QtImageImpl *mImage;
 };

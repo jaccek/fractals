@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 2.8.12.2)
 
 project(fractals)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+
+find_package(Qt5Widgets)
+
 # include directories
 include_directories(
 	.
@@ -11,7 +16,6 @@ include_directories(
 
 # library directories
 link_directories(
-	../lib/SFML
 )
 
 
@@ -25,7 +29,5 @@ file(GLOB_RECURSE SRC_FILES
 add_executable(fractals ${SRC_FILES})
 
 target_link_libraries(fractals
-	sfml-graphics
-	sfml-window
-	sfml-system
+	Qt5::Widgets
 )
