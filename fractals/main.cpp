@@ -1,5 +1,6 @@
-#include "window.h"
+#include <GL/glew.h>
 #include <QApplication>
+#include "ui/window.h"
 
 int main(int argc, char **argv)
 {
@@ -13,5 +14,6 @@ int main(int argc, char **argv)
 	}
 
 	window.show();
+	window.afterShow();
 	return app.exec();
 }

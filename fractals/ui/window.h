@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gl_widget.h"
 #include "generators/generator.h"
 #include "graphics/impl/qt_image_impl.h"
 
@@ -14,6 +15,7 @@ public:
 	~Window();
 
 	bool init();
+	void afterShow();
 
 protected:
 	virtual void mouseMoveEvent(QMouseEvent *event);
@@ -26,6 +28,7 @@ private:
 	QtImageImpl *mImage;
 
 	QLabel *mLabel;
+	GlWidget *mGlWidget;
 
 	int mMousePositionX;
 	int mMousePositionY;
