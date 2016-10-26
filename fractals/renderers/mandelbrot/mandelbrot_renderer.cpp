@@ -5,65 +5,22 @@
 
 MandelbrotRenderer::MandelbrotRenderer()
 {
-    float vertices[] = {
-        -1.0f,  1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f,
-         1.0f, -1.0f, 0.0f,
-         1.0f,  1.0f, 0.0f
-    };
+    createShaderProgram();
 
-
+    // TODO:
     glGenBuffers(1, &mVertexBuffer);
     glGenVertexArrays(1, &mVertexArray);
-    glBindVertexArray(mVertexArray);
-        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
-        glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
+    //createVertexBufferAndVertexArray();
 
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    std::string vertexShaderCode = FileLoader::loadFile("shaders/base.vert");
-    const char *code = vertexShaderCode.c_str();
-    glShaderSource(vertexShader, 1, &code, NULL);
-    glCompileShader(vertexShader);
-    GLint success;
-    GLchar infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        printf("error vert: %s\n", infoLog);
-        throw success;
-    }
-
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    std::string fragmentShaderCode = FileLoader::loadFile("shaders/base.frag");
-    code = fragmentShaderCode.c_str();
-    glShaderSource(fragmentShader, 1, &code, NULL);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        printf("error frag: %s\n", infoLog);
-        throw success;
-    }
-
-    mShaderProgram = glCreateProgram();
-    glAttachShader(mShaderProgram, vertexShader);
-    glAttachShader(mShaderProgram, fragmentShader);
-    glLinkProgram(mShaderProgram);
-    glGetProgramiv(mShaderProgram, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        glGetProgramInfoLog(mShaderProgram, 512, NULL, infoLog);
-        printf("error: %s\n", infoLog);
-        throw success;
-    }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    // glBindVertexArray(mVertexArray);
+    //     GLint positionAttrib = glGetAttribLocation(mShaderProgram, "iPosition");
+    //     glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)0);
+    //     glEnableVertexAttribArray(positionAttrib);
+    //
+    //     GLint coordsAttrib = glGetAttribLocation(mShaderProgram, "iCoords");
+    //     glVertexAttribPointer(coordsAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
+    //     glEnableVertexAttribArray(coordsAttrib);
+    // glBindVertexArray(0);
 }
 
 MandelbrotRenderer::~MandelbrotRenderer()
@@ -72,6 +29,11 @@ MandelbrotRenderer::~MandelbrotRenderer()
 
 void MandelbrotRenderer::init()
 {
+}
+
+void MandelbrotRenderer::onInputArgsChanged(InputArgs &args)
+{
+    fillVertexBufferAndVertexArray(args);
 }
 
 void MandelbrotRenderer::resize(int width, int height)
@@ -85,14 +47,95 @@ void MandelbrotRenderer::render()
 {
     glUseProgram(mShaderProgram);
     glBindVertexArray(mVertexArray);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
     glUseProgram(0);
+}
 
-    // glColor3f(1.0f, 0.0f, 0.0f);
-    // glBegin(GL_TRIANGLES);
-    // glVertex3f(1.0f, 1.0f, 1.0f);
-    // glVertex3f(1.0f, -1.0f, 1.0f);
-    // glVertex3f(-1.0f, 1.0f, 1.0f);
-    // glEnd();
+unsigned int MandelbrotRenderer::loadAndCompileShader(std::string filename, ShaderType shaderType)
+{
+    unsigned int shader = glCreateShader(shaderType == VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
+
+    std::string shaderCode = FileLoader::loadFile(filename);
+    const char *code = shaderCode.c_str();
+
+    glShaderSource(shader, 1, &code, NULL);
+    glCompileShader(shader);
+
+    checkShaderError(shader, GL_COMPILE_STATUS, shaderType);
+
+    return shader;
+}
+
+void MandelbrotRenderer::createShaderProgram()
+{
+    GLuint vertexShader = loadAndCompileShader("shaders/mandelbrot.vert", VERTEX);
+    GLuint fragmentShader = loadAndCompileShader("shaders/mandelbrot.frag", FRAGMENT);
+
+    mShaderProgram = glCreateProgram();
+
+    glAttachShader(mShaderProgram, vertexShader);
+    glAttachShader(mShaderProgram, fragmentShader);
+
+    glLinkProgram(mShaderProgram);
+    checkShaderError(mShaderProgram, GL_LINK_STATUS, PROGRAM);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+}
+
+void MandelbrotRenderer::fillVertexBufferAndVertexArray(InputArgs &args)
+{
+    float vertices[] = {
+        -1.0f,  1.0f, 0.0f,  args.left, args.top,
+        -1.0f, -1.0f, 0.0f,  args.left, args.bottom,
+         1.0f, -1.0f, 0.0f, args.right, args.bottom,
+        -1.0f,  1.0f, 0.0f,  args.left, args.top,
+         1.0f, -1.0f, 0.0f, args.right, args.bottom,
+         1.0f,  1.0f, 0.0f, args.right, args.top
+    };
+
+    glBindVertexArray(mVertexArray);
+        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+        GLint positionAttrib = glGetAttribLocation(mShaderProgram, "iPosition");
+        glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(positionAttrib);
+
+        GLint coordsAttrib = glGetAttribLocation(mShaderProgram, "iCoords");
+        glVertexAttribPointer(coordsAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
+        glEnableVertexAttribArray(coordsAttrib);
+    glBindVertexArray(0);
+}
+
+void MandelbrotRenderer::checkShaderError(unsigned int shader, int thingToCheck, ShaderType shaderType)
+{
+    GLint success;
+    glGetProgramiv(shader, thingToCheck, &success);
+    if (!success)
+    {
+        GLchar infoLog[512] = { 0 };
+        std::string shaderTypeString;
+        switch (shaderType)
+        {
+            case VERTEX:
+                shaderTypeString = "vertex";
+                glGetShaderInfoLog(shader, 512, NULL, infoLog);
+                break;
+
+            case FRAGMENT:
+                shaderTypeString = "fragment";
+                glGetShaderInfoLog(shader, 512, NULL, infoLog);
+                break;
+
+            case PROGRAM:
+                shaderTypeString = "program";
+                glGetProgramInfoLog(shader, 512, NULL, infoLog);
+                break;
+        }
+
+        printf("%s error: %s\n", shaderTypeString.c_str(), infoLog);
+        throw success;
+    }
 }

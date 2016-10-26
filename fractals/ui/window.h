@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gl_widget.h"
+#include "renderers/renderer.h"
 #include "generators/generator.h"
 #include "graphics/impl/qt_image_impl.h"
 
@@ -24,11 +25,15 @@ protected:
 	virtual void wheelEvent(QWheelEvent *event);
 
 private:
+	void redrawContent();
+
 	Generator *mGenerator;
 	QtImageImpl *mImage;
 
 	QLabel *mLabel;
 	GlWidget *mGlWidget;
+
+	Renderer *mRenderer;
 
 	int mMousePositionX;
 	int mMousePositionY;

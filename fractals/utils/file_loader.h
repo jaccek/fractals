@@ -5,5 +5,5 @@
 class FileLoader
 {
 public:
-    static std::string loadFile(std::string filename);
+    static std::string loadFile(std::string &filename);
 };

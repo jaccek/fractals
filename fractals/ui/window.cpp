@@ -33,12 +33,6 @@ bool Window::init()
 	mImage = new QtImageImpl();
 	mImage->create(WIDTH, HEIGHT);
 
-	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mImage->getWidth(), mImage->getHeight());
-	//mGenerator->generate(*mImage, args);
-
-    //mLabel = new QLabel(centralWidget);
-    //mLabel->setPixmap(QPixmap::fromImage(*mImage->getImage()));
-
 	mGlWidget = new GlWidget(centralWidget);
 	mGlWidget->resize(WIDTH, HEIGHT);
 
@@ -55,11 +49,19 @@ bool Window::init()
 
 void Window::afterShow()
 {
-	mGlWidget->setRenderer(new MandelbrotRenderer());
+	mRenderer = new MandelbrotRenderer();
+	mGlWidget->setRenderer(mRenderer);
+	redrawContent();
 }
 
 void Window::mouseMoveEvent(QMouseEvent *event)
 {
+	mCenterPointX -= (float) (event->x() - mMousePositionX) * mViewScale;
+	mCenterPointY += (float) (event->y() - mMousePositionY) * mViewScale;
+	redrawContent();
+
+	mMousePositionX = event->x();
+	mMousePositionY = event->y();
 }
 
 void Window::mousePressEvent(QMouseEvent *event)
@@ -70,11 +72,7 @@ void Window::mousePressEvent(QMouseEvent *event)
 
 void Window::mouseReleaseEvent(QMouseEvent *event)
 {
-	mCenterPointX -= (float) (event->x() - mMousePositionX) * mViewScale;
-	mCenterPointY += (float) (event->y() - mMousePositionY) * mViewScale;
-	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mImage->getWidth(), mImage->getHeight());
-	//mGenerator->generate(*mImage, args);
-	//mLabel->setPixmap(QPixmap::fromImage(*mImage->getImage()));
+
 }
 
 void Window::wheelEvent(QWheelEvent *event)
@@ -89,7 +87,12 @@ void Window::wheelEvent(QWheelEvent *event)
 		mViewScale /= 1.1f;
 	}
 
+	redrawContent();
+}
+
+void Window::redrawContent()
+{
 	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mImage->getWidth(), mImage->getHeight());
-	//mGenerator->generate(*mImage, args);
-	//mLabel->setPixmap(QPixmap::fromImage(*mImage->getImage()));
+	mRenderer->onInputArgsChanged(args);
+	mGlWidget->update();
 }
