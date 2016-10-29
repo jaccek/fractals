@@ -6,7 +6,8 @@ This project was created to play with fractals.
 
 # Dependencies
 
-* SFML: http://www.sfml-dev.org/ // TODO: use library from /usr/lib; not local one
+* Qt 5.7 (https://www.qt.io/)
+* OpenGL 3.3 (https://www.opengl.org/)
 
 # Compiling (Linux)
 
