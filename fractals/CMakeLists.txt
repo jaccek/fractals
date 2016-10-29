@@ -37,9 +37,3 @@ target_link_libraries(fractals
 	${OPENGL_LIBRARIES}
 	${GLEW_LIBRARIES}
 )
-
-file(COPY
-	${CMAKE_CURRENT_SOURCE_DIR}/shaders/base.vert
-	${CMAKE_CURRENT_SOURCE_DIR}/shaders/base.frag
-	DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../artifacts/shaders
-)

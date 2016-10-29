@@ -9,6 +9,7 @@ public:
     GlWidget(QWidget *parent);
     virtual ~GlWidget();
 
+    void deleteRenderer();
     void setRenderer(Renderer *renderer);
 
 protected:

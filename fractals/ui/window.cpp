@@ -1,5 +1,6 @@
 #include "window.h"
 #include "generators/mandelbrot_generator.h"
+#include "renderers/julia/julia_renderer.h"
 #include "renderers/mandelbrot/mandelbrot_renderer.h"
 #include "graphics/impl/qt_image_impl.h"
 
@@ -37,9 +38,19 @@ bool Window::init()
 	mGlWidget->resize(WIDTH, HEIGHT);
 
     QMenuBar *menuBar = new QMenuBar(centralWidget);
-    QMenu *menu = new QMenu("menu");
-    menu->addAction(new QAction("test", menu));
-    menuBar->addMenu(menu);
+    QMenu *modeMenu = new QMenu("mode");
+	QMenu *fractalsMenu = new QMenu("fractals");
+
+	QAction *mandelbrotAction = new QAction("Mandelbrot", fractalsMenu);
+	connect(mandelbrotAction, &QAction::triggered, this, &Window::changeModeMandelbrot);
+    fractalsMenu->addAction(mandelbrotAction);
+
+	QAction *juliaAction = new QAction("Julia Set", fractalsMenu);
+	connect(juliaAction, &QAction::triggered, this, &Window::changeModeJuliaSet);
+    fractalsMenu->addAction(juliaAction);
+
+	modeMenu->addMenu(fractalsMenu);
+    menuBar->addMenu(modeMenu);
 
     setCentralWidget(centralWidget);
 	setMouseTracking(true);
@@ -49,9 +60,12 @@ bool Window::init()
 
 void Window::afterShow()
 {
-	mRenderer = new MandelbrotRenderer();
+	mRenderer = new JuliaRenderer();
+	// mRenderer = new MandelbrotRenderer();
 	mGlWidget->setRenderer(mRenderer);
 	redrawContent();
+
+	// changeModeMandelbrot();
 }
 
 void Window::mouseMoveEvent(QMouseEvent *event)
@@ -72,7 +86,6 @@ void Window::mousePressEvent(QMouseEvent *event)
 
 void Window::mouseReleaseEvent(QMouseEvent *event)
 {
-
 }
 
 void Window::wheelEvent(QWheelEvent *event)
@@ -90,9 +103,33 @@ void Window::wheelEvent(QWheelEvent *event)
 	redrawContent();
 }
 
+void Window::changeModeMandelbrot()
+{
+	mCenterPointX = 0.0f;
+	mCenterPointY = 0.0f;
+	mViewScale = 0.005f;
+
+	mGlWidget->deleteRenderer();
+	mRenderer = new MandelbrotRenderer();
+	mGlWidget->setRenderer(mRenderer);
+	redrawContent();
+}
+
+void Window::changeModeJuliaSet()
+{
+	mCenterPointX = 0.0f;
+	mCenterPointY = 0.0f;
+	mViewScale = 0.005f;
+
+	mGlWidget->deleteRenderer();
+	mRenderer = new JuliaRenderer();
+	mGlWidget->setRenderer(mRenderer);
+	redrawContent();
+}
+
 void Window::redrawContent()
 {
-	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mImage->getWidth(), mImage->getHeight());
+	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mGlWidget->width(), mGlWidget->height());
 	mRenderer->onInputArgsChanged(args);
 	mGlWidget->update();
 }

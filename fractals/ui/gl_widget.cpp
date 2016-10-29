@@ -4,45 +4,49 @@
 GlWidget::GlWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     mRenderer = nullptr;
+
+    QSurfaceFormat format;
+    format.setDepthBufferSize(24);
+    format.setMajorVersion(3);
+    format.setMinorVersion(3);
+    // setFormat(format);
 }
 
 GlWidget::~GlWidget()
 {
+    deleteRenderer();
+}
+
+void GlWidget::deleteRenderer()
+{
     if (mRenderer != nullptr)
     {
         delete mRenderer;
+        mRenderer = nullptr;
     }
 }
 
 void GlWidget::setRenderer(Renderer *renderer)
 {
-    Renderer *oldRenderer = mRenderer;
     mRenderer = renderer;
     mRenderer->init();
     mRenderer->resize(width(), height());
-
-    if (oldRenderer != nullptr)
-    {
-        delete oldRenderer;
-    }
 }
 
 void GlWidget::initializeGL()
 {
-	glewExperimental = true;
+	//glewExperimental = true;
 	glewInit();
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    char *version = (char*) glGetString(GL_VERSION);
+    printf("%s\n", version);
 
-    if (mRenderer != nullptr)
-    {
-        mRenderer->init();
-    }
+    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void GlWidget::paintGL()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (mRenderer != nullptr)
     {
