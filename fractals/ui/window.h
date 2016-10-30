@@ -2,8 +2,6 @@
 
 #include "gl_widget.h"
 #include "renderers/renderer.h"
-#include "generators/generator.h"
-#include "graphics/impl/qt_image_impl.h"
 
 #include <QMainWindow>
 #include <QMenuBar>
@@ -29,14 +27,13 @@ private slots:
 	void changeModeJuliaSet();
 
 private:
+	typedef void (Window::*SlotFunction)();
+
+	void changeMode(Renderer *renderer);
 	void redrawContent();
+	void addMenu(QMenu *parent, const char *actionName, SlotFunction slot);
 
-	Generator *mGenerator;
-	QtImageImpl *mImage;
-
-	QLabel *mLabel;
 	GlWidget *mGlWidget;
-
 	Renderer *mRenderer;
 
 	int mMousePositionX;

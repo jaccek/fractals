@@ -22,6 +22,9 @@ protected:
         PROGRAM
     };
 
+    virtual void fillVertexBufferAndVertexArray(InputArgs &args);
+    virtual void bindShaderAttributes();
+
     unsigned int getShaderProgram();
     unsigned int getVertexArray();
 
@@ -29,7 +32,6 @@ protected:
     unsigned int loadAndCompileShader(std::string &filename, ShaderType shaderType);
     void checkShaderError(unsigned int shader, int thingToCheck, ShaderType shaderType);
     void checkShaderProgramError(unsigned int program);
-    void fillVertexBufferAndVertexArray(InputArgs &args);
 
 private:
     unsigned int mVertexBuffer;

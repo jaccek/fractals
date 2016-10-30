@@ -1,5 +1,4 @@
 #include "window.h"
-#include "generators/mandelbrot_generator.h"
 #include "renderers/julia/julia_renderer.h"
 #include "renderers/mandelbrot/mandelbrot_renderer.h"
 #include "graphics/impl/qt_image_impl.h"
@@ -11,28 +10,17 @@ const unsigned HEIGHT = 600;
 
 Window::Window()
 {
-	mCenterPointX = 0.0f;
-	mCenterPointY = 0.0f;
-	mViewScale = 0.005f;
-
-	mGenerator = new MandelbrotGenerator();
 }
-
 
 Window::~Window()
 {
-	delete mGenerator;
 }
-
 
 bool Window::init()
 {
 	resize(WIDTH, HEIGHT);
 
 	QWidget *centralWidget = new QWidget(this);
-
-	mImage = new QtImageImpl();
-	mImage->create(WIDTH, HEIGHT);
 
 	mGlWidget = new GlWidget(centralWidget);
 	mGlWidget->resize(WIDTH, HEIGHT);
@@ -41,13 +29,8 @@ bool Window::init()
     QMenu *modeMenu = new QMenu("mode");
 	QMenu *fractalsMenu = new QMenu("fractals");
 
-	QAction *mandelbrotAction = new QAction("Mandelbrot", fractalsMenu);
-	connect(mandelbrotAction, &QAction::triggered, this, &Window::changeModeMandelbrot);
-    fractalsMenu->addAction(mandelbrotAction);
-
-	QAction *juliaAction = new QAction("Julia Set", fractalsMenu);
-	connect(juliaAction, &QAction::triggered, this, &Window::changeModeJuliaSet);
-    fractalsMenu->addAction(juliaAction);
+	addMenu(fractalsMenu, "Mandelbrot", &Window::changeModeMandelbrot);
+	addMenu(fractalsMenu, "Julia Set", &Window::changeModeJuliaSet);
 
 	modeMenu->addMenu(fractalsMenu);
     menuBar->addMenu(modeMenu);
@@ -60,12 +43,7 @@ bool Window::init()
 
 void Window::afterShow()
 {
-	mRenderer = new JuliaRenderer();
-	// mRenderer = new MandelbrotRenderer();
-	mGlWidget->setRenderer(mRenderer);
-	redrawContent();
-
-	// changeModeMandelbrot();
+	changeModeMandelbrot();
 }
 
 void Window::mouseMoveEvent(QMouseEvent *event)
@@ -109,10 +87,7 @@ void Window::changeModeMandelbrot()
 	mCenterPointY = 0.0f;
 	mViewScale = 0.005f;
 
-	mGlWidget->deleteRenderer();
-	mRenderer = new MandelbrotRenderer();
-	mGlWidget->setRenderer(mRenderer);
-	redrawContent();
+	changeMode(new MandelbrotRenderer());
 }
 
 void Window::changeModeJuliaSet()
@@ -121,15 +96,32 @@ void Window::changeModeJuliaSet()
 	mCenterPointY = 0.0f;
 	mViewScale = 0.005f;
 
+	changeMode(new JuliaRenderer());
+}
+
+void Window::changeMode(Renderer *renderer)
+{
 	mGlWidget->deleteRenderer();
-	mRenderer = new JuliaRenderer();
-	mGlWidget->setRenderer(mRenderer);
+	mRenderer = renderer;
+	mGlWidget->setRenderer(renderer);
 	redrawContent();
 }
 
 void Window::redrawContent()
 {
-	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mGlWidget->width(), mGlWidget->height());
+	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX,
+					mCenterPointY,
+					mViewScale,
+					mGlWidget->width(),
+					mGlWidget->height());
+
 	mRenderer->onInputArgsChanged(args);
 	mGlWidget->update();
+}
+
+void Window::addMenu(QMenu *parent, const char *actionName, SlotFunction slot)
+{
+	QAction *action = new QAction(actionName, parent);
+	connect(action, &QAction::triggered, this, slot);
+    parent->addAction(action);
 }

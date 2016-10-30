@@ -40,7 +40,28 @@ void Renderer::render()
 {
     glUseProgram(mShaderProgram);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+    bindShaderAttributes();
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glUseProgram(0);
+}
 
+void Renderer::fillVertexBufferAndVertexArray(InputArgs &args)
+{
+    float vertices[] = {
+        -1.0f,  1.0f, 0.0f,  args.left, args.top,
+        -1.0f, -1.0f, 0.0f,  args.left, args.bottom,
+         1.0f, -1.0f, 0.0f, args.right, args.bottom,
+         1.0f,  1.0f, 0.0f, args.right, args.top
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+    bindShaderAttributes();
+}
+
+void Renderer::bindShaderAttributes()
+{
     GLint positionAttrib = glGetAttribLocation(mShaderProgram, "iPosition");
     glEnableVertexAttribArray(positionAttrib);
     glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)0);
@@ -48,9 +69,6 @@ void Renderer::render()
     GLint coordsAttrib = glGetAttribLocation(mShaderProgram, "iCoords");
     glEnableVertexAttribArray(coordsAttrib);
     glVertexAttribPointer(coordsAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
-
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    glUseProgram(0);
 }
 
 unsigned int Renderer::getShaderProgram()
@@ -135,25 +153,4 @@ void Renderer::checkShaderProgramError(unsigned int program)
         printf("program error: %s\n", infoLog);
         throw success;
     }
-}
-
-void Renderer::fillVertexBufferAndVertexArray(InputArgs &args)
-{
-    float vertices[] = {
-        -1.0f,  1.0f, 0.0f,  args.left, args.top,
-        -1.0f, -1.0f, 0.0f,  args.left, args.bottom,
-         1.0f, -1.0f, 0.0f, args.right, args.bottom,
-         1.0f,  1.0f, 0.0f, args.right, args.top
-    };
-
-    glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
-    GLint positionAttrib = glGetAttribLocation(mShaderProgram, "iPosition");
-    glEnableVertexAttribArray(positionAttrib);
-    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)0);
-
-    GLint coordsAttrib = glGetAttribLocation(mShaderProgram, "iCoords");
-    glEnableVertexAttribArray(coordsAttrib);
-    glVertexAttribPointer(coordsAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
 }
