@@ -2,13 +2,13 @@
 
 precision highp float;
 
-in highp vec2 vCoords;
+in highp vec2 aCoords;
 out highp vec4 color;
 
 void main()
 {
-    float zRe = vCoords.x;
-    float zIm = vCoords.y;
+    float zRe = aCoords.x;
+    float zIm = aCoords.y;
     float nextRe;
     float nextIm;
     float squareModule;

@@ -4,12 +4,7 @@
 GlWidget::GlWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     mRenderer = nullptr;
-
-    QSurfaceFormat format;
-    format.setDepthBufferSize(24);
-    format.setMajorVersion(3);
-    format.setMinorVersion(3);
-    // setFormat(format);
+    mOpenGlInitialized = false;
 }
 
 GlWidget::~GlWidget()
@@ -33,6 +28,11 @@ void GlWidget::setRenderer(Renderer *renderer)
     mRenderer->resize(width(), height());
 }
 
+bool GlWidget::canRender()
+{
+    return mOpenGlInitialized;
+}
+
 void GlWidget::initializeGL()
 {
 	//glewExperimental = true;
@@ -42,6 +42,7 @@ void GlWidget::initializeGL()
     printf("%s\n", version);
 
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    mOpenGlInitialized = true;
 }
 
 void GlWidget::paintGL()

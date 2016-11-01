@@ -40,8 +40,12 @@ void Renderer::render()
 {
     glUseProgram(mShaderProgram);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+
+    bindShaderUniforms();
     bindShaderAttributes();
+
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    
     glUseProgram(0);
 }
 
@@ -69,6 +73,10 @@ void Renderer::bindShaderAttributes()
     GLint coordsAttrib = glGetAttribLocation(mShaderProgram, "iCoords");
     glEnableVertexAttribArray(coordsAttrib);
     glVertexAttribPointer(coordsAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
+}
+
+void Renderer::bindShaderUniforms()
+{
 }
 
 unsigned int Renderer::getShaderProgram()

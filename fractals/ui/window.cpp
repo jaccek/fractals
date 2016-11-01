@@ -24,6 +24,8 @@ bool Window::init()
 
 	mGlWidget = new GlWidget(centralWidget);
 	mGlWidget->resize(WIDTH, HEIGHT);
+	QSizePolicy policy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	mGlWidget->setSizePolicy(policy);
 
     QMenuBar *menuBar = new QMenuBar(centralWidget);
     QMenu *modeMenu = new QMenu("mode");
@@ -81,6 +83,12 @@ void Window::wheelEvent(QWheelEvent *event)
 	redrawContent();
 }
 
+void Window::resizeEvent(QResizeEvent *event)
+{
+	mGlWidget->resize(event->size());
+	redrawContent();
+}
+
 void Window::changeModeMandelbrot()
 {
 	mCenterPointX = 0.0f;
@@ -109,6 +117,11 @@ void Window::changeMode(Renderer *renderer)
 
 void Window::redrawContent()
 {
+	if (!mGlWidget->canRender())
+	{
+		return;
+	}
+	
 	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX,
 					mCenterPointY,
 					mViewScale,

@@ -24,6 +24,7 @@ protected:
 
     virtual void fillVertexBufferAndVertexArray(InputArgs &args);
     virtual void bindShaderAttributes();
+    virtual void bindShaderUniforms();
 
     unsigned int getShaderProgram();
     unsigned int getVertexArray();

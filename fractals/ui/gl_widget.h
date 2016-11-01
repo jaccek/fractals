@@ -12,6 +12,8 @@ public:
     void deleteRenderer();
     void setRenderer(Renderer *renderer);
 
+    bool canRender();
+
 protected:
     virtual void initializeGL();
     virtual void paintGL();
@@ -19,4 +21,5 @@ protected:
 
 private:
     Renderer *mRenderer;
+    bool mOpenGlInitialized;
 };
