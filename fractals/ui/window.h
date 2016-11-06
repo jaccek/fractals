@@ -1,7 +1,7 @@
 #pragma once
 
 #include "gl_widget.h"
-#include "renderers/renderer.h"
+#include "modes/mode.h"
 
 #include <QMainWindow>
 #include <QMenuBar>
@@ -30,17 +30,9 @@ private slots:
 private:
 	typedef void (Window::*SlotFunction)();
 
-	void changeMode(Renderer *renderer);
-	void redrawContent();
+	void changeMode(Mode *mode);
 	void addMenu(QMenu *parent, const char *actionName, SlotFunction slot);
 
 	GlWidget *mGlWidget;
-	Renderer *mRenderer;
-
-	int mMousePositionX;
-	int mMousePositionY;
-
-	float mCenterPointX;
-	float mCenterPointY;
-	float mViewScale;
+	Mode *mMode;
 };

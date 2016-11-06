@@ -3,6 +3,8 @@
 #include "renderers/mandelbrot/mandelbrot_renderer.h"
 #include "graphics/impl/qt_image_impl.h"
 
+#include "modes/fractal_mode.h"
+
 #include <QMouseEvent>
 
 const unsigned WIDTH = 800;
@@ -10,6 +12,7 @@ const unsigned HEIGHT = 600;
 
 Window::Window()
 {
+	mMode = nullptr;
 }
 
 Window::~Window()
@@ -50,86 +53,48 @@ void Window::afterShow()
 
 void Window::mouseMoveEvent(QMouseEvent *event)
 {
-	mCenterPointX -= (float) (event->x() - mMousePositionX) * mViewScale;
-	mCenterPointY += (float) (event->y() - mMousePositionY) * mViewScale;
-	redrawContent();
-
-	mMousePositionX = event->x();
-	mMousePositionY = event->y();
+	mMode->onMouseMoveEvent(event);
 }
 
 void Window::mousePressEvent(QMouseEvent *event)
 {
-	mMousePositionX = event->x();
-	mMousePositionY = event->y();
+	mMode->onMousePressEvent(event);
 }
 
 void Window::mouseReleaseEvent(QMouseEvent *event)
 {
+	mMode->onMouseReleaseEvent(event);
 }
 
 void Window::wheelEvent(QWheelEvent *event)
 {
-	QPoint numDegrees = event->angleDelta() / 8;
-	if (numDegrees.y() < 0)
-	{
-		mViewScale *= 1.1f;
-	}
-	else
-	{
-		mViewScale /= 1.1f;
-	}
-
-	redrawContent();
+	mMode->onMouseWheelEvent(event);
 }
 
 void Window::resizeEvent(QResizeEvent *event)
 {
 	mGlWidget->resize(event->size());
-	redrawContent();
+	if (mMode != nullptr)
+	{
+		mMode->onResizeEvent(event);
+	}
 }
 
 void Window::changeModeMandelbrot()
 {
-	mCenterPointX = 0.0f;
-	mCenterPointY = 0.0f;
-	mViewScale = 0.005f;
-
-	changeMode(new MandelbrotRenderer());
+	changeMode(new FractalMode(mGlWidget, FractalMode::MANDELBROT, mGlWidget->width(), mGlWidget->height()));
 }
 
 void Window::changeModeJuliaSet()
 {
-	mCenterPointX = 0.0f;
-	mCenterPointY = 0.0f;
-	mViewScale = 0.005f;
-
-	changeMode(new JuliaRenderer());
+	changeMode(new FractalMode(mGlWidget, FractalMode::JULIA_SET, mGlWidget->width(), mGlWidget->height()));
 }
 
-void Window::changeMode(Renderer *renderer)
+void Window::changeMode(Mode *mode)
 {
-	mGlWidget->deleteRenderer();
-	mRenderer = renderer;
-	mGlWidget->setRenderer(renderer);
-	redrawContent();
-}
-
-void Window::redrawContent()
-{
-	if (!mGlWidget->canRender())
-	{
-		return;
-	}
-	
-	InputArgs args = InputArgs::fromPointAndScale(mCenterPointX,
-					mCenterPointY,
-					mViewScale,
-					mGlWidget->width(),
-					mGlWidget->height());
-
-	mRenderer->onInputArgsChanged(args);
-	mGlWidget->update();
+	mMode = mode;
+	mMode->onModeSelected();
+	mGlWidget->setMode(mMode);
 }
 
 void Window::addMenu(QMenu *parent, const char *actionName, SlotFunction slot)

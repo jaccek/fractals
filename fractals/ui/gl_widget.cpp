@@ -3,34 +3,29 @@
 
 GlWidget::GlWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
-    mRenderer = nullptr;
+    mMode = nullptr;
     mOpenGlInitialized = false;
 }
 
 GlWidget::~GlWidget()
 {
-    deleteRenderer();
+    deleteMode();
 }
 
-void GlWidget::deleteRenderer()
+void GlWidget::setMode(Mode *mode)
 {
-    if (mRenderer != nullptr)
-    {
-        delete mRenderer;
-        mRenderer = nullptr;
-    }
-}
-
-void GlWidget::setRenderer(Renderer *renderer)
-{
-    mRenderer = renderer;
-    mRenderer->init();
-    mRenderer->resize(width(), height());
+    deleteMode();
+    mMode = mode;
 }
 
 bool GlWidget::canRender()
 {
     return mOpenGlInitialized;
+}
+
+void GlWidget::refreshView()
+{
+    update();
 }
 
 void GlWidget::initializeGL()
@@ -49,16 +44,21 @@ void GlWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (mRenderer != nullptr)
+    if (mMode != nullptr)
     {
-        mRenderer->render();
+        mMode->render();
     }
 }
 
 void GlWidget::resizeGL(int width, int height)
 {
-    if (mRenderer != nullptr)
+}
+
+void GlWidget::deleteMode()
+{
+    if (mMode != nullptr)
     {
-        mRenderer->resize(width, height);
+        delete mMode;
+        mMode = nullptr;
     }
 }

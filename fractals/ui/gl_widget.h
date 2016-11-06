@@ -1,18 +1,18 @@
 #pragma once
 
-#include "renderers/renderer.h"
+#include "modes/mode.h"
 #include <QOpenGLWidget>
 
-class GlWidget : public QOpenGLWidget
+class GlWidget : public QOpenGLWidget, public Mode::ViewRefresher
 {
 public:
     GlWidget(QWidget *parent);
     virtual ~GlWidget();
 
-    void deleteRenderer();
-    void setRenderer(Renderer *renderer);
+    void setMode(Mode *mode);
 
     bool canRender();
+    virtual void refreshView();
 
 protected:
     virtual void initializeGL();
@@ -20,6 +20,8 @@ protected:
     virtual void resizeGL(int width, int height);
 
 private:
-    Renderer *mRenderer;
+    void deleteMode();
+
+    Mode *mMode;
     bool mOpenGlInitialized;
 };
