@@ -1,9 +1,7 @@
 #include "window.h"
-#include "renderers/julia/julia_renderer.h"
-#include "renderers/mandelbrot/mandelbrot_renderer.h"
 #include "graphics/impl/qt_image_impl.h"
 
-#include "modes/fractal_mode.h"
+#include "modes/fractal_mode/fractal_mode.h"
 
 #include <QMouseEvent>
 

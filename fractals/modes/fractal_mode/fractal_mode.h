@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mode.h"
+#include "modes/mode.h"
 
 class FractalMode : public Mode
 {

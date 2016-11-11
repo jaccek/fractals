@@ -7,7 +7,7 @@ This project was created to play with fractals.
 # Dependencies
 
 * Qt 5.7 (https://www.qt.io/)
-* OpenGL 3.3 (https://www.opengl.org/)
+* OpenGL 3.0 ES (https://www.opengl.org/)
 
 # Compiling (Linux)
 

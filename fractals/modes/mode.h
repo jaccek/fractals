@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderers/renderer.h"
+#include "renderer.h"
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>

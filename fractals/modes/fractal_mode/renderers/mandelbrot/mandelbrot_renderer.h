@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderers/renderer.h"
+#include "modes/renderer.h"
 
 class MandelbrotRenderer : public Renderer
 {

@@ -1,4 +1,4 @@
-#include "renderers/renderer.h"
+#include "modes/renderer.h"
 
 class JuliaRenderer : public Renderer
 {
