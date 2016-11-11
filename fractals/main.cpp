@@ -15,5 +15,9 @@ int main(int argc, char **argv)
 
 	window.show();
 	window.afterShow();
-	return app.exec();
+
+	int result = app.exec();
+
+	window.close();
+	return result;
 }

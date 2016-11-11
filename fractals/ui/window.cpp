@@ -15,11 +15,15 @@ Window::Window()
 
 Window::~Window()
 {
+	if (mMode != nullptr)
+	{
+		mMode->onModeDeselected();
+	}
 }
 
 bool Window::init()
 {
-	resize(WIDTH, HEIGHT);
+	setGeometry(0, 0, WIDTH, HEIGHT);
 
 	QWidget *centralWidget = new QWidget(this);
 
@@ -78,6 +82,11 @@ void Window::resizeEvent(QResizeEvent *event)
 	}
 }
 
+void Window::closeEvent(QCloseEvent *event)
+{
+	changeMode(nullptr);
+}
+
 void Window::changeModeMandelbrot()
 {
 	changeMode(new FractalMode(mGlWidget, FractalMode::MANDELBROT, mGlWidget->width(), mGlWidget->height()));
@@ -90,9 +99,18 @@ void Window::changeModeJuliaSet()
 
 void Window::changeMode(Mode *mode)
 {
+	if (mMode != nullptr)
+	{
+		mMode->onModeDeselected();
+	}
+
+	if (mode != nullptr)
+	{
+		mode->onModeSelected();
+	}
+
 	mMode = mode;
-	mMode->onModeSelected();
-	mGlWidget->setMode(mMode);
+	mGlWidget->setMode(mode);
 }
 
 void Window::addMenu(QMenu *parent, const char *actionName, SlotFunction slot)

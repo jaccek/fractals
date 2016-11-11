@@ -1,6 +1,7 @@
 #pragma once
 
 #include "modes/mode.h"
+#include "ui/modes/fractal_mode_window.h"
 
 class FractalMode : public Mode
 {
@@ -40,4 +41,5 @@ private:
 	float mViewScale;
 
     Renderer *mRenderer;
+    FractalModeWindow *mSubWindow;
 };

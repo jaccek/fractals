@@ -37,10 +37,16 @@ void FractalMode::onModeSelected()
 {
     mRenderer->init();
     refreshFractal();
+
+    mSubWindow = new FractalModeWindow();
+    mSubWindow->init();
+    mSubWindow->show();
 }
 
 void FractalMode::onModeDeselected()
 {
+    mSubWindow->close();
+    delete mSubWindow;
 }
 
 void FractalMode::onResizeEvent(QResizeEvent *event)
