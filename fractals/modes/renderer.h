@@ -22,7 +22,8 @@ protected:
         PROGRAM
     };
 
-    virtual void fillVertexBufferAndVertexArray(InputArgs &args);
+    virtual void onShadersLoaded();
+    virtual void fillVertexBufferAndVertexArray();
     virtual void bindShaderAttributes();
     virtual void bindShaderUniforms();
 
@@ -37,4 +38,10 @@ protected:
 private:
     unsigned int mVertexBuffer;
     unsigned int mShaderProgram;
+
+    unsigned int mUniformZ0Location;
+    unsigned int mAttributePositionLocation;
+    unsigned int mAttributeCoordinatesLocation;
+
+    InputArgs mLastInputArgs;
 };

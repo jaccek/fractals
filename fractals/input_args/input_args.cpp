@@ -1,5 +1,13 @@
 #include "input_args.h"
 
+InputArgs& InputArgs::setStartPoint(float x, float y)
+{
+    startX = x;
+    startY = y;
+
+    return *this;
+}
+
 InputArgs InputArgs::fromPointAndScale(float x, float y, float scale, int width, int height)
 {
     float halfScaledWidth = scale * (float) width / 2.0f;

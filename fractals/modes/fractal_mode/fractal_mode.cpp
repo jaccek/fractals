@@ -12,14 +12,20 @@ FractalMode::FractalMode(ViewRefresher *refresher, FractalType fractalType, int 
 	mCenterPointY = 0.0f;
 	mViewScale = 0.005f;
 
+    mMouseButton = Qt::NoButton;
+
     switch(fractalType)
     {
         case MANDELBROT:
             mRenderer = new MandelbrotRenderer();
+            mStartPointX = 0.0f;
+            mStartPointY = 0.0f;
             break;
 
         case JULIA_SET:
             mRenderer = new JuliaRenderer();
+            mStartPointX = -0.1f;
+            mStartPointY = 0.65f;
             break;
 
         default:
@@ -59,9 +65,19 @@ void FractalMode::onResizeEvent(QResizeEvent *event)
 
 void FractalMode::onMouseMoveEvent(QMouseEvent *event)
 {
-    mCenterPointX -= (float) (event->x() - mMousePositionX) * mViewScale;
-	mCenterPointY += (float) (event->y() - mMousePositionY) * mViewScale;
-    refreshFractal();
+    if (mMouseButton == Qt::RightButton)
+    {
+        mCenterPointX -= (float) (event->x() - mMousePositionX) * mViewScale;
+    	mCenterPointY += (float) (event->y() - mMousePositionY) * mViewScale;
+        refreshFractal();
+    }
+    else if (mMouseButton == Qt::LeftButton)
+    {
+        InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mWidth, mHeight);
+        mStartPointX = interpolate(event->x(), 0, mWidth, args.left, args.right);
+        mStartPointY = interpolate(event->y(), 0, mHeight, args.bottom, args.top);
+        refreshFractal();
+    }
 
 	mMousePositionX = event->x();
 	mMousePositionY = event->y();
@@ -69,12 +85,15 @@ void FractalMode::onMouseMoveEvent(QMouseEvent *event)
 
 void FractalMode::onMousePressEvent(QMouseEvent *event)
 {
+    mMouseButton = event->button();
+
 	mMousePositionX = event->x();
 	mMousePositionY = event->y();
 }
 
 void FractalMode::onMouseReleaseEvent(QMouseEvent *event)
 {
+    mMouseButton = Qt::NoButton;
 }
 
 void FractalMode::onMouseWheelEvent(QWheelEvent *event)
@@ -98,7 +117,14 @@ Renderer* FractalMode::getRenderer()
 
 void FractalMode::refreshFractal()
 {
-    InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mWidth, mHeight);
+    InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mWidth, mHeight).
+            setStartPoint(mStartPointX, mStartPointY);
 	mRenderer->onInputArgsChanged(args);
     refreshView();
+}
+
+float FractalMode::interpolate(int value, int minOld, int maxOld, float minNew, float maxNew)
+{
+    float t = (float) (value - minOld) / (float) (maxOld - minOld);
+    return minNew * (1.0f - t) + maxNew * t;
 }

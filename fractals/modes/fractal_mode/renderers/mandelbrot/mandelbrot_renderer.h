@@ -8,6 +8,5 @@ public:
     MandelbrotRenderer();
     virtual ~MandelbrotRenderer();
 
-protected:
-    virtual void bindShaderUniforms();
+private:
 };

@@ -27,7 +27,8 @@ void Renderer::init()
 
 void Renderer::onInputArgsChanged(InputArgs &args)
 {
-    fillVertexBufferAndVertexArray(args);
+    mLastInputArgs = args;
+    fillVertexBufferAndVertexArray();
 }
 
 void Renderer::resize(int width, int height)
@@ -45,17 +46,25 @@ void Renderer::render()
     bindShaderAttributes();
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    
+
     glUseProgram(0);
 }
 
-void Renderer::fillVertexBufferAndVertexArray(InputArgs &args)
+void Renderer::onShadersLoaded()
+{
+    mUniformZ0Location = glGetUniformLocation(getShaderProgram(), "inZ0");
+
+    mAttributePositionLocation = glGetAttribLocation(mShaderProgram, "iPosition");
+    mAttributeCoordinatesLocation = glGetAttribLocation(mShaderProgram, "iCoords");
+}
+
+void Renderer::fillVertexBufferAndVertexArray()
 {
     float vertices[] = {
-        -1.0f,  1.0f, 0.0f,  args.left, args.top,
-        -1.0f, -1.0f, 0.0f,  args.left, args.bottom,
-         1.0f, -1.0f, 0.0f, args.right, args.bottom,
-         1.0f,  1.0f, 0.0f, args.right, args.top
+        -1.0f,  1.0f, 0.0f, mLastInputArgs.left,  mLastInputArgs.top,
+        -1.0f, -1.0f, 0.0f, mLastInputArgs.left,  mLastInputArgs.bottom,
+         1.0f, -1.0f, 0.0f, mLastInputArgs.right, mLastInputArgs.bottom,
+         1.0f,  1.0f, 0.0f, mLastInputArgs.right, mLastInputArgs.top
     };
 
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
@@ -66,17 +75,16 @@ void Renderer::fillVertexBufferAndVertexArray(InputArgs &args)
 
 void Renderer::bindShaderAttributes()
 {
-    GLint positionAttrib = glGetAttribLocation(mShaderProgram, "iPosition");
-    glEnableVertexAttribArray(positionAttrib);
-    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)0);
+    glEnableVertexAttribArray(mAttributePositionLocation);
+    glVertexAttribPointer(mAttributePositionLocation, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)0);
 
-    GLint coordsAttrib = glGetAttribLocation(mShaderProgram, "iCoords");
-    glEnableVertexAttribArray(coordsAttrib);
-    glVertexAttribPointer(coordsAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(mAttributeCoordinatesLocation);
+    glVertexAttribPointer(mAttributeCoordinatesLocation, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
 }
 
 void Renderer::bindShaderUniforms()
 {
+    glUniform2f(mUniformZ0Location, mLastInputArgs.startX, mLastInputArgs.startY);
 }
 
 unsigned int Renderer::getShaderProgram()
@@ -105,6 +113,8 @@ void Renderer::createShaderProgram(std::string vertexShaderFile, std::string fra
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+
+    onShadersLoaded();
 }
 
 unsigned int Renderer::loadAndCompileShader(std::string &filename, ShaderType shaderType)

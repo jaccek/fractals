@@ -29,9 +29,11 @@ protected:
 
 private:
     void refreshFractal();
+    float interpolate(int value, int minOld, int maxOld, float minNew, float maxNew);
 
 	int mMousePositionX;
 	int mMousePositionY;
+    Qt::MouseButton mMouseButton;
 
     int mWidth;
     int mHeight;
@@ -39,6 +41,8 @@ private:
 	float mCenterPointX;
 	float mCenterPointY;
 	float mViewScale;
+    float mStartPointX;
+    float mStartPointY;
 
     Renderer *mRenderer;
     FractalModeWindow *mSubWindow;

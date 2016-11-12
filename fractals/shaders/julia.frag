@@ -5,6 +5,8 @@ precision highp float;
 in highp vec2 aCoords;
 out highp vec4 color;
 
+uniform vec2 inZ0;
+
 void main()
 {
     float zRe = aCoords.x;
@@ -17,8 +19,8 @@ void main()
     int iterations = 300;
     for (i = 0; i < iterations; ++i)
     {
-        nextRe = zRe*zRe - zIm*zIm - 0.1;
-        nextIm = 2.0*zRe*zIm + 0.65;
+        nextRe = zRe*zRe - zIm*zIm + inZ0.x;
+        nextIm = 2.0*zRe*zIm + inZ0.y;
 
         squareModule = nextRe*nextRe + nextIm*nextIm;
         if (squareModule > 4.0f)
