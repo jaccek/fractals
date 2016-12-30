@@ -42,11 +42,12 @@ FractalMode::~FractalMode()
 void FractalMode::onModeSelected()
 {
     mRenderer->init();
-    refreshFractal();
 
     mSubWindow = new FractalModeWindow();
     mSubWindow->init();
     mSubWindow->show();
+
+    refreshFractal();
 }
 
 void FractalMode::onModeDeselected()
@@ -120,6 +121,7 @@ void FractalMode::refreshFractal()
     InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mWidth, mHeight).
             setStartPoint(mStartPointX, mStartPointY);
 	mRenderer->onInputArgsChanged(args);
+    mSubWindow->setStartPoint(mStartPointX, mStartPointY);
     refreshView();
 }
 

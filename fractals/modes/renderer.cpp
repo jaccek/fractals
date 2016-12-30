@@ -7,12 +7,12 @@ Renderer::Renderer()
 {
     glGenBuffers(1, &mVertexBuffer);
     int error = glGetError();
-    printf("constructor: error=%u, buf=%u\n", error, mVertexBuffer);
+    printf("Renderer: constructor: error=%u, buf=%u\n", error, mVertexBuffer);
 }
 
 Renderer::~Renderer()
 {
-    printf("destructor\n");
+    printf("Renderer: destructor\n");
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDeleteBuffers(1, &mVertexBuffer);
@@ -22,7 +22,7 @@ Renderer::~Renderer()
 
 void Renderer::init()
 {
-    printf("init\n");
+    printf("Renderer: init\n");
 }
 
 void Renderer::onInputArgsChanged(InputArgs &args)
@@ -99,7 +99,7 @@ unsigned int Renderer::getVertexArray()
 
 void Renderer::createShaderProgram(std::string vertexShaderFile, std::string fragmentShaderFile)
 {
-    printf("createShaderProgram(%s, %s)\n", vertexShaderFile.c_str(), fragmentShaderFile.c_str());
+    printf("Renderer: createShaderProgram(%s, %s)\n", vertexShaderFile.c_str(), fragmentShaderFile.c_str());
     GLuint vertexShader = loadAndCompileShader(vertexShaderFile, VERTEX);
     GLuint fragmentShader = loadAndCompileShader(fragmentShaderFile, FRAGMENT);
 
