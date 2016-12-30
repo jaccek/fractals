@@ -76,7 +76,7 @@ void FractalMode::onMouseMoveEvent(QMouseEvent *event)
     {
         InputArgs args = InputArgs::fromPointAndScale(mCenterPointX, mCenterPointY, mViewScale, mWidth, mHeight);
         mStartPointX = interpolate(event->x(), 0, mWidth, args.left, args.right);
-        mStartPointY = interpolate(event->y(), 0, mHeight, args.bottom, args.top);
+        mStartPointY = interpolate(mHeight - event->y(), 0, mHeight, args.bottom, args.top);
         refreshFractal();
     }
 

@@ -11,7 +11,7 @@ FractalModeWindow::~FractalModeWindow()
 void FractalModeWindow::init()
 {
     printf("FractalModeWindow: init()\n");
-    setGeometry(800, 0, 220, 200);
+    setGeometry(800, 0, 250, 200);
 
     mContainer = new QWidget(this);
 
@@ -36,6 +36,6 @@ void FractalModeWindow::setStartPoint(float x, float y)
     }
     const int textLength = 64;
     char text[textLength];
-    sprintf(text, "center: (%.8f, %.8f)", x, y);
+    sprintf(text, "start point: (%.8f, %.8f)", x, y);
     mLabel->setText(QString(text));
 }
