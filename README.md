@@ -26,4 +26,6 @@ Preferred way to compile:
   make
   ```
 
-5. Compiled application should be in `artifacts` folder.
+5. Copy `shader` folder from `fractals` to `artifacts` directory.
+
+6. Compiled application should be in `artifacts` folder.
