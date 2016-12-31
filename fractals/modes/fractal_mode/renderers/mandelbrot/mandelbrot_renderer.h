@@ -1,8 +1,8 @@
 #pragma once
 
-#include "modes/renderer.h"
+#include "modes/fractal_mode/renderers/fractal_renderer.h"
 
-class MandelbrotRenderer : public Renderer
+class MandelbrotRenderer : public FractalRenderer
 {
 public:
     MandelbrotRenderer();

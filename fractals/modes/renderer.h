@@ -35,6 +35,8 @@ protected:
     void checkShaderError(unsigned int shader, int thingToCheck, ShaderType shaderType);
     void checkShaderProgramError(unsigned int program);
 
+    InputArgs& getLastInputArgs();
+
 private:
     unsigned int mVertexBuffer;
     unsigned int mShaderProgram;

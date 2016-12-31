@@ -1,6 +1,8 @@
-#include "modes/renderer.h"
+#pragma once
 
-class JuliaRenderer : public Renderer
+#include "modes/fractal_mode/renderers/fractal_renderer.h"
+
+class JuliaRenderer : public FractalRenderer
 {
 public:
     JuliaRenderer();

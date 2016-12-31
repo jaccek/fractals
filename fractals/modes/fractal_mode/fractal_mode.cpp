@@ -44,7 +44,7 @@ void FractalMode::onModeSelected()
     mRenderer->init();
 
     mSubWindow = new FractalModeWindow();
-    mSubWindow->init();
+    mSubWindow->init(this);
     mSubWindow->show();
 
     refreshFractal();
@@ -108,6 +108,12 @@ void FractalMode::onMouseWheelEvent(QWheelEvent *event)
 	{
 		mViewScale /= 1.1f;
 	}
+    refreshFractal();
+}
+
+void FractalMode::setDrawStartPoint(bool draw)
+{
+    mRenderer->setDrawStartPoint(draw);
     refreshFractal();
 }
 

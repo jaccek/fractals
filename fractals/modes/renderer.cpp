@@ -172,3 +172,8 @@ void Renderer::checkShaderProgramError(unsigned int program)
         throw success;
     }
 }
+
+InputArgs& Renderer::getLastInputArgs()
+{
+    return mLastInputArgs;
+}

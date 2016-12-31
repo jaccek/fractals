@@ -1,7 +1,10 @@
 #pragma once
 
 #include "modes/mode.h"
+#include "modes/fractal_mode/renderers/fractal_renderer.h"
 #include "ui/modes/fractal_mode_window.h"
+
+class FractalModeWindow;
 
 class FractalMode : public Mode
 {
@@ -24,6 +27,8 @@ public:
     virtual void onMouseReleaseEvent(QMouseEvent *event);
     virtual void onMouseWheelEvent(QWheelEvent *event);
 
+    void setDrawStartPoint(bool draw);
+
 protected:
     virtual Renderer* getRenderer();
 
@@ -44,6 +49,6 @@ private:
     float mStartPointX;
     float mStartPointY;
 
-    Renderer *mRenderer;
+    FractalRenderer *mRenderer;
     FractalModeWindow *mSubWindow;
 };
