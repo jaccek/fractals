@@ -3,8 +3,9 @@
 #include <QMenuBar>
 #include <QLabel>
 #include <dlfcn.h>
+#include "common_class.h"
 
-typedef void (*Function)(int number);
+typedef CommonClass* (*Function)();
 
 int main(int argc, char **argv)
 {
@@ -32,13 +33,16 @@ int main(int argc, char **argv)
     printf("1\n");
     void *myLib = dlopen("./libsimplelib.so", RTLD_NOW);
     printf("2\n");
-    void (*abc)(int);
-    abc = (Function) dlsym(myLib, "testFunction");
+    CommonClass* (*abc)();
+    abc = (Function) dlsym(myLib, "getClass");
     printf("3\n");
-    abc(12);
+    CommonClass *obj = (CommonClass*) abc();
     printf("4\n");
-    dlclose(myLib);
+    obj->printNumber(143);
     printf("5\n");
+    delete obj;
+    dlclose(myLib);
+    printf("6\n");
 
-    return app.exec();
+    return 0;//app.exec();
 }

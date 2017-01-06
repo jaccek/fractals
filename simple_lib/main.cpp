@@ -1,6 +1,18 @@
 #include <cstdio>
+#include "../qttest/common_class.h"
 
-extern "C" void testFunction(int number)
+class LibClass : public CommonClass
 {
-    printf("testFunction(%d)\n", number);
+public:
+    virtual ~LibClass() {}
+
+    virtual void printNumber(int number)
+    {
+        printf("printNumber(%d)\n", number);
+    }
+};
+
+extern "C" CommonClass* getClass()
+{
+    return new LibClass();
 }
