@@ -9,4 +9,4 @@ find_package(Qt5Widgets)
 
 add_executable(qttest main.cpp)
 
-target_link_libraries(qttest Qt5::Widgets)
+target_link_libraries(qttest Qt5::Widgets ${CMAKE_DL_LIBS})

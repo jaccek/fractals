@@ -2,6 +2,9 @@
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QLabel>
+#include <dlfcn.h>
+
+typedef void (*Function)(int number);
 
 int main(int argc, char **argv)
 {
@@ -25,6 +28,17 @@ int main(int argc, char **argv)
 
     window->setCentralWidget(centralWidget);
     window->show();
+
+    printf("1\n");
+    void *myLib = dlopen("./libsimplelib.so", RTLD_NOW);
+    printf("2\n");
+    void (*abc)(int);
+    abc = (Function) dlsym(myLib, "testFunction");
+    printf("3\n");
+    abc(12);
+    printf("4\n");
+    dlclose(myLib);
+    printf("5\n");
 
     return app.exec();
 }

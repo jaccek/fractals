@@ -29,3 +29,9 @@ Preferred way to compile:
 5. Copy `shader` folder from `fractals` to `artifacts` directory.
 
 6. Compiled application should be in `artifacts` folder.
+
+# To do
+
+- Insensitiveness to be run from different directories (now it cannot find shaders).
+- Modes system (every mode as different dynamic library which will be loaded in runtime).
+- cross stitching mode :)
