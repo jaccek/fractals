@@ -7,6 +7,6 @@ namespace mapi
     public:
         virtual ~ModeInfo() {}
 
-        //virtual
+        virtual const char* getModeName() = 0;
     };
 }
