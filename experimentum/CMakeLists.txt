@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12.2)
 
-project(fractals)
+set(PROJECT_NAME experimentum)
+project(${PROJECT_NAME})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -30,9 +31,9 @@ file(GLOB_RECURSE SRC_FILES
 )
 
 
-add_executable(fractals ${SRC_FILES})
+add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-target_link_libraries(fractals
+target_link_libraries(${PROJECT_NAME}
 	Qt5::Widgets
 	${OPENGL_LIBRARIES}
 	${GLEW_LIBRARIES}
