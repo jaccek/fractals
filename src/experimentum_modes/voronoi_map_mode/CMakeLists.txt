@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8.12.2)
 
-set(PROJECT_NAME mode_api)
+set(PROJECT_NAME voronoi_map_mode)
 project(${PROJECT_NAME})
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $ENV{WORKSPACE_DIR}/artifacts/modes)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $ENV{WORKSPACE_DIR}/artifacts/modes/${PROJECT_NAME})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -12,8 +12,8 @@ set(CMAKE_AUTOMOC ON)
 # include directories
 include_directories(
 	.
-	include
 	$ENV{WORKSPACE_DIR}/src
+	$ENV{WORKSPACE_DIR}/src/experimentum_modes/mode_api/include
 	$ENV{WORKSPACE_DIR}/include
 )
 

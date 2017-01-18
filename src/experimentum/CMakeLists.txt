@@ -13,8 +13,10 @@ find_package(GLEW REQUIRED)
 # include directories
 include_directories(
 	.
-	..
-	../include
+	$ENV{WORKSPACE_DIR}/src
+	$ENV{WORKSPACE_DIR}/src/experimentum_modes/mode_api/include
+	$ENV{WORKSPACE_DIR}/include
+
 	${OPENGL_INCLUDE_DIRS}
 	${GLEW_INCLUDE_DIRS}
 )
@@ -37,4 +39,5 @@ target_link_libraries(${PROJECT_NAME}
 	Qt5::Widgets
 	${OPENGL_LIBRARIES}
 	${GLEW_LIBRARIES}
+	${CMAKE_DL_LIBS}
 )

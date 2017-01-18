@@ -2,6 +2,7 @@
 #include "graphics/impl/qt_image_impl.h"
 
 #include "modes/fractal_mode/fractal_mode.h"
+#include "modes/loader/modes_loader.h"
 
 #include <QMouseEvent>
 
@@ -44,6 +45,14 @@ bool Window::init()
 
     setCentralWidget(centralWidget);
 	setMouseTracking(true);
+
+	std::vector<mapi::ModeInfo*> modeInfos = ModesLoader::loadModes();
+	for(auto modeInfo : modeInfos)
+	{
+		printf("Mode: %s\n", modeInfo->getModeName());
+		QMenu *qtMenu = new QMenu(modeInfo->getModeName());
+		modeMenu->addMenu(qtMenu);
+	}
 
 	return true;
 }
