@@ -49,7 +49,6 @@ bool Window::init()
 	std::vector<mapi::ModeInfo*> modeInfos = ModesLoader::loadModes();
 	for(auto modeInfo : modeInfos)
 	{
-		printf("Mode: %s\n", modeInfo->getModeName());
 		QMenu *qtMenu = new QMenu(modeInfo->getModeName());
 		modeMenu->addMenu(qtMenu);
 	}
@@ -94,6 +93,7 @@ void Window::resizeEvent(QResizeEvent *event)
 void Window::closeEvent(QCloseEvent *event)
 {
 	changeMode(nullptr);
+	ModesLoader::cleanup();
 }
 
 void Window::changeModeMandelbrot()
