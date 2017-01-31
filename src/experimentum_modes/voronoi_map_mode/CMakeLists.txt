@@ -18,8 +18,9 @@ include_directories(
 )
 
 # library directories
-# link_directories(
-# )
+link_directories(
+	$ENV{WORKSPACE_DIR}/artifacts
+)
 
 
 # files to compile
@@ -31,5 +32,6 @@ file(GLOB_RECURSE SRC_FILES
 
 add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
 
-# target_link_libraries(${PROJECT_NAME}
-# )
+target_link_libraries(${PROJECT_NAME}
+	mode_api
+)

@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QLabel>
+#include <vector>
 
 class Window : public QMainWindow
 {
@@ -34,6 +35,7 @@ private:
 	void changeMode(Mode *mode);
 	void addMenu(QMenu *parent, const char *actionName, SlotFunction slot);
 
+	std::vector<QMenu*> mMenus;
 	GlWidget *mGlWidget;
 	Mode *mMode;
 };

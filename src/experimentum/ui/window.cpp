@@ -37,6 +37,18 @@ bool Window::init()
     QMenu *modeMenu = new QMenu("mode");
 	QMenu *fractalsMenu = new QMenu("fractals");
 
+	std::vector<mapi::ModeInfo*> modeInfos = ModesLoader::loadModes();
+	for(unsigned i = 0; i < modeInfos.size(); ++i)
+	{
+		auto modeInfo = modeInfos[i];
+		QMenu *singleModeMenu = new QMenu(modeInfo->getModeName());
+		mMenus.push_back(singleModeMenu);
+		modeMenu->addMenu(singleModeMenu);
+		// TODO: submenus
+	}
+
+	// TODO: fractals mode should be moved to separate library
+	mMenus.push_back(fractalsMenu);
 	addMenu(fractalsMenu, "Mandelbrot", &Window::changeModeMandelbrot);
 	addMenu(fractalsMenu, "Julia Set", &Window::changeModeJuliaSet);
 
@@ -45,13 +57,6 @@ bool Window::init()
 
     setCentralWidget(centralWidget);
 	setMouseTracking(true);
-
-	std::vector<mapi::ModeInfo*> modeInfos = ModesLoader::loadModes();
-	for(auto modeInfo : modeInfos)
-	{
-		QMenu *qtMenu = new QMenu(modeInfo->getModeName());
-		modeMenu->addMenu(qtMenu);
-	}
 
 	return true;
 }
@@ -98,6 +103,18 @@ void Window::closeEvent(QCloseEvent *event)
 
 void Window::changeModeMandelbrot()
 {
+	/*printf("sender: %d\n", sender());
+	for (auto menu : mMenus)
+	{
+		for (auto action : menu->actions())
+		{
+			if (action == sender())
+			{
+				printf("Action from %s\n", menu->title().toUtf8().data());
+				// TODO: end searching
+			}
+		}
+	}*/
 	changeMode(new FractalMode(mGlWidget, FractalMode::MANDELBROT, mGlWidget->width(), mGlWidget->height()));
 }
 

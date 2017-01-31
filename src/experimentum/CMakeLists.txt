@@ -23,6 +23,7 @@ include_directories(
 
 # library directories
 link_directories(
+	$ENV{WORKSPACE_DIR}/artifacts
 )
 
 
@@ -37,6 +38,7 @@ add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 target_link_libraries(${PROJECT_NAME}
 	Qt5::Widgets
+	mode_api
 	${OPENGL_LIBRARIES}
 	${GLEW_LIBRARIES}
 	${CMAKE_DL_LIBS}

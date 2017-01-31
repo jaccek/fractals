@@ -73,6 +73,7 @@ mapi::ModeInfo* ModesLoader::loadMode(dirent* dir)
 
     if (library == nullptr)
     {
+        printf("ModesLoader: cannot find library: %s\nReason: %s\n", filename, dlerror());
         return nullptr;
     }
 
@@ -81,7 +82,7 @@ mapi::ModeInfo* ModesLoader::loadMode(dirent* dir)
     functionGetModeInfo = (Function) dlsym(library, "getModeInfo");
     if (functionGetModeInfo == nullptr)
     {
-        printf("ModesLoader: cannot find function: getModeInfo\r");
+        printf("ModesLoader: cannot find function: getModeInfo\n");
         dlclose(library);
         return nullptr;
     }
